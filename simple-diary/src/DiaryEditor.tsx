@@ -1,6 +1,7 @@
 import {MutableRefObject, useRef, useState} from "react";
+import {OnCreateProps} from "./Props";
 
-const DiaryEditor = () => {
+const DiaryEditor = ({onCreate}: OnCreateProps) => {
   const [state, setState] = useState({
     author: "",
     content: "",
@@ -28,8 +29,13 @@ const DiaryEditor = () => {
       return
     }
 
-    console.log(state)
+    onCreate(state.author, state.content, state.emotion)
     alert('Saved')
+    setState({
+      author: "",
+      content: "",
+      emotion: 1
+    })
   }
 
   return (

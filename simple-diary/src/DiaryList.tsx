@@ -1,21 +1,14 @@
-import {Diary} from "./App";
 import DiaryItem from "./DiaryItem";
+import {DiaryListProps} from "./Props";
 
-export interface DiaryProps {
-  diaryList: Diary[]
-}
-
-const DiaryList = ({diaryList}: DiaryProps) => {
-  diaryList.map(it => console.log(it.id))
-  diaryList.map(it => console.log(it.content))
-
+const DiaryList = ({diaryList, onDelete, onEdit}: DiaryListProps) => {
   return (
     <div className="DiaryList">
       <h2>Diary List</h2>
       <h4>There are {diaryList.length} Diaries</h4>
       <div>
         {diaryList.map((it) => (
-          <DiaryItem key={it.id} {...it} />
+          <DiaryItem onDelete={onDelete} onEdit={onEdit} key={it.id} diary={it}/>
         ))}
       </div>
     </div>
