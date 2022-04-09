@@ -1,9 +1,10 @@
 import './App.css'
 import DiaryEditor from "./DiaryEditor";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import DiaryList from "./DiaryList";
 import {Diary} from "./Types";
 import LifeCycle from "./LifeCycle";
+import OptimizeTest from "./OptimizeTest";
 
 //https://jsonplaceholder.typicode.com/comments
 
@@ -60,10 +61,32 @@ function App() {
     )
   }
 
+  const getDiaryAnalysis = useMemo(() => {
+    if (data.length == 0)
+      return {goodEmotionCount: 0, badEmotionCount: 0, goodEmotionRatio: 0}
+
+    console.log('Diary Analysis Start')
+
+    const goodEmotionCount = data.filter(it => it.emotion >= 3).length
+    const badEmotionCount = data.length - goodEmotionCount
+    const goodEmotionRatio = goodEmotionCount / data.length * 100
+
+    return {goodEmotionCount, badEmotionCount, goodEmotionRatio}
+  }, [data.length])
+
+  const {goodEmotionCount, badEmotionCount, goodEmotionRatio} = getDiaryAnalysis;
+
   return (
     <div className="App">
+      <OptimizeTest />
       <LifeCycle/>
       <DiaryEditor onCreate={onCreate}/>
+      <div>
+        <p>Total Diary : {data.length}</p>
+        <p>Good Emotion Diary : {goodEmotionCount}</p>
+        <p>Bad Emotion Diary : {badEmotionCount}</p>
+        <p>Good Emotion Ratio : {goodEmotionRatio}%</p>
+      </div>
       <DiaryList diaryList={data} onDelete={onDelete} onEdit={onEdit}/>
     </div>
   )
@@ -71,29 +94,7 @@ function App() {
 
 export default App
 
-
 /*
-export const diaryList: Diary[] = [
-  {
-    id: 1,
-    author: "panda",
-    content: "bear",
-    emotion: 5,
-    created_date: new Date().getTime()
-  },
-  {
-    id: 2,
-    author: "panda panda",
-    content: "bear bear",
-    emotion: 3,
-    created_date: new Date().getTime()
-  },
-  {
-    id: 3,
-    author: "panda panda panda",
-    content: "bear bear bear",
-    emotion: 1,
-    created_date: new Date().getTime()
-  }
-]
+useMemo 콜백을 받아 콜백 수행 후 리턴되는 값을 기억해놓는 녀석
+두번째 인자로 전달하는 배열에 변경을 감지할 값을 넣어주고 요놈이 바뀔 때만 수행된다
  */
